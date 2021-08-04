@@ -1,0 +1,188 @@
+﻿@using TwenyTwoRT.EfStuff.Model
+@using TwenyTwoRT.Models;
+@inject UserService userService
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FavoritesPlaces</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/topStyle.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+    <link rel="stylesheet" href="~/css/icon.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/layout.js"></script>
+    <script src="~/js/registration.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/butLG.js"></script>
+
+    @RenderSection("Scripts", required: false)
+    @RenderSection("Style", required: false)
+</head>
+<body>
+    
+    <div class="nice-popup hide">
+        <div class="popup-cover"></div>
+        <div class="login-block">
+            <div class="login-direction">
+                <form action="/User/Registration" method="post" id="login-or-registration" class="loginformstyle">
+                    <div>
+                        <input name="@nameof(RegistrationViewModel.Login)"
+                               class="inputFields" type="text"
+                               placeholder="Login" />
+                    </div>
+                    <div>
+                        <input name="@nameof(RegistrationViewModel.Password)"
+                               class="inputFields" type="password"
+                               placeholder="Password" />
+                    </div>
+                    <div class="login-but">
+                        <input class="pglogbut" type="submit"
+                               value="Login" />
+                    </div>
+
+                    <div class="or">or</div>
+                    <div class="registration-but">
+                        <input class="pglogbut" type="submit"
+                               value="Registration" />
+                    </div>
+                </form>
+                <button class="registration-but registration-btn" disabled>Зарегистрироваться</button>
+            </div>
+        </div>
+        <div class="phone-number-reg-popup-cover hide"></div>
+        <div class="phone-number-reg hide">
+            <div class="confirmation-reg-text">
+                Введите номер телефона для подтверждения регистрации:
+            </div>
+            <div>
+                <input type="text" class="reg-phone-input" maxlength="13" />
+            </div>
+            <div>
+                <button class="confirm-number" disabled>
+                    Подтвердить номер
+                </button>
+            </div>
+            <div class="spinner-reg hide">
+                <span class="icon spinner"></span>
+                <div class="spinner-reg-text">Пожалуйста, подождите...</div>
+            </div>
+        </div>
+
+        <div class="confirmation-reg-popup-cover hide"></div>
+        <div class="confirmation-reg hide">
+            <div class="confirmation-reg-text">Введите код подтверждения из СМС:</div>
+            <div class="inputs-for-code-reg">
+                <input class="code-from-sms-reg code-input1" name="testtest" maxlength="1" autofocus />
+                <input class="code-from-sms-reg code-input2" maxlength="1" />
+                <input class="code-from-sms-reg code-input3" maxlength="1" />
+                <input class="code-from-sms-reg code-input4" maxlength="1" />
+            </div>
+            <button class="confirmation-code-btn confirmation-code-btn-open hide" disabled>Подтвердить регистрацию</button>
+        </div>
+    </div>
+    <div class="socials-popup hide">
+        <div class="socials-popup-cover"></div>
+        <div class="socials-block telegram">
+            <div class="popup-text-telegram-group">
+                Для получения доступа к Telegram-каналу,
+                пожалуйста, введите ключ доступа.
+            </div>
+            <div class="empty-place-telegram"></div>
+            <form action="/User/Socials" method="post" class="socials-form-telegram">
+                <div>
+                    <input type="hidden"
+                           name="@nameof(SocialsPasswordViewModel.Link)"
+                           value="@nameof(GlobalConst.TELEGRAMGROUPLINK)" />
+                </div>
+                <div>
+                    Ключ доступа:
+                </div>
+                <div>
+                    <input name="@nameof(SocialsPasswordViewModel.Password)" class="socials-passcode-telegram" type="text" placeholder="Passcode" />
+                </div>
+                <div>
+                    <input type="submit" value="Хочу туда!" class="socials-submit-telegram" />
+                </div>
+            </form>
+        </div>
+        <div class="socials-block youtube">
+            <div class="left-socials-youtube"></div>
+            <div class="right-socials-youtube">
+                <div class="popup-text-youtube-group">
+                    Видео-покатушек можно на Youtube-канале. Введите ключ доступа.
+                </div>
+                <form action="/User/Socials" method="post" class="socials-form-youtube">
+                    <div>
+                        <input type="hidden"
+                               name="@nameof(SocialsPasswordViewModel.Link)"
+                               value="@nameof(GlobalConst.YOUTUBETEACHERLINK)" />
+                    </div>
+                    <div>
+                        Ключ доступа:
+                    </div>
+                    <div>
+                        <input name="@nameof(SocialsPasswordViewModel.Password)" class="socials-passcode-youtube" type="text" placeholder="Passcode" />
+                    </div>
+                    <div>
+                        <input type="submit" value="Хочу туда!" class="socials-submit-youtube" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="top no-print">
+        <div class="info">
+            <a href="/">
+                <div class="home">
+                    <img class="logo-image" src="../image/bank/logo.png" alt="logo">
+                    SpaceWeb
+                </div>
+            </a>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+
+                <div class="user-info">
+                    @if (userService.IsAdmin())
+                    {
+                        <a href="/User/AllAvatars">
+                        </a>
+                    }
+                    
+                    <a href="/User/Logout" class="profile-exit">
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="link icon log-in">Login</div>
+            }
+        </div>
+    </div>
+    <div class="content">
+        @RenderBody()
+    </div>
+
+    <footer class="footer">
+        <div class="rights">©All rights reserved</div>
+        <div class="language">
+            <span data-lang="Ru">Русский</span>
+            <span data-lang="En">English</span>
+        </div>
+        <div class="developed-by">Developed by Lis Alesya </div>
+        <div class="contacts">
+            <div class="social-media">
+                <img class="footer-icon telegram tmsgroup" src="../image/icon/telegram-color-48px.svg">
+                <img class="footer-icon youtube teacher" src="../image/icon/youtube-color-48px.svg">
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
